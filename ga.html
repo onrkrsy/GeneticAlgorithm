@@ -1,0 +1,204 @@
+<html>
+<head>
+<meta charset="utf-8">
+ <title></title>
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCSLSltAe8llgPsJ2FXhJD1z2mRziR7SEA"></script>
+<!--  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyC8SQ27ATB5ouHdc2687wnBRSPAGYXMlsY"></script>-->
+<script src="js/jquery.min.js" type="text/javascript"></script>
+ 
+
+<script src="js/genetikAlgoritma.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="js/bootstrap.min.js"></script>
+</head>
+<body>
+<style>
+    .div_cover { position:absolute; width:100%;  
+                height:100%; top:0; left:0; right:0; bottom:0;}
+    .div_map { position:absolute; width:100%;
+                height:100%; top:0; left:0; right:0; bottom:0;}
+    .div_info { position:absolute;  width:100%;  background:#fff;
+                height:100%;  }                
+.div_r { position: relative; height:100%;}
+.row { height:100%;}
+ 
+ @media only screen and (max-device-width: 900px) { /* Change to whatever media query you require */
+   .div_r {
+  position:absolute;  top:0;
+}
+    }
+</style>
+
+<div class="div_cover">
+
+  <div class="hr vpad"></div>
+  <div class="row">
+  <div class="div_r col-xs-12 col-md-9">  <div id="map-canvas" class="div_map" ></div></div>
+  <div class="div_r col-xs-6 col-md-3"> <div class="div_info well">
+  <h3><b>Ayarlar</b></h3><hr />
+  <div id="ga-buttons">
+   <button class="btn btn-primary" id="find-route">Başla</button> <button class="btn btn-primary" id="clear-map">Temizle</button>
+  </div>
+  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingOne">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" style=" display:block;" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+       Genetik Algroitma Ayarları
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+      <div class="panel-body">
+        <table>
+       
+        <tr>
+            <td>Seyahat Şekli: </td>
+            <td>
+                <select id="travel-type" class="form-control">
+                    <option value="DRIVING">Araba</option>
+                    <option value="BICYCLING">Bisiklet</option>
+                    <option value="WALKING">Yürüyerek</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Otoyolları Kullanma</td>
+            <td>
+                <select id="avoid-highways" class="form-control">
+                    <option value="1">Evet</option>
+                    <option value="0" selected="selected">Hayır</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Popülasyon: </td>
+            <td>
+                <select id="population-size" class="form-control">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50" selected="selected">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Mutasyon Oranı </td>
+            <td>
+                <select id="mutation-rate" class="form-control">
+                    <option value="0.00">0.00</option>
+                    <option value="0.05">0.01</option>
+                    <option value="0.05">0.05</option>
+                    <option value="0.1" selected="selected">0.1</option>
+                    <option value="0.2">0.2</option>
+                    <option value="0.4">0.4</option>
+                    <option value="0.7">0.7</option>
+                    <option value="1">1.0</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Çaprazlama Oranı: </td>
+            <td>
+                <select id="crossover-rate" class="form-control">
+                    <option value="0.0">0.0</option>
+                    <option value="0.1">0.1</option>
+                    <option value="0.2">0.2</option>
+                    <option value="0.3">0.3</option>
+                    <option value="0.4">0.4</option>
+                    <option value="0.5" selected="selected">0.5</option>
+                    <option value="0.6">0.6</option>
+                    <option value="0.7">0.7</option>
+                    <option value="0.8">0.8</option>
+                    <option value="0.9">0.9</option>
+                    <option value="1">1.0</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Elitist seçim </td>
+            <td>
+                <select id="elitism" class="form-control">
+                    <option value="1" selected="selected">Açık</option>
+                    <option value="0">Kapalı</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Maksimum Jenerasyon: </td>
+            <td>
+                <select id="generations" class="form-control">
+                    <option value="20">20</option>
+                    <option value="50" selected="selected">50</option>
+                    <option value="100">100</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><b>Debug Info</b></td>
+        </tr>
+        <tr>
+            <td>Hedef Sayısı: </td>
+            <td id="destinations-count">0</td>
+        </tr>
+        <tr class="ga-info" style="display:none;">
+            <td>Jenerasyon: </td><td id="generations-passed">0</td>
+        </tr>
+        <tr class="ga-info" style="display:none;">
+            <td>En kısa rota: </td><td id="best-time">?</td>
+        </tr>
+
+         
+
+      
+    </table>  </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingTwo">
+      <h4 class="panel-title">
+        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        Jenerasyon Geçmişi
+        </a>
+      </h4>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+      <div class="panel-body">
+      <div style="max-height:400px; overflow:scroll;" class="list-group"><span id="routeadd"></span></div>
+       </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingThree">
+      <h4 class="panel-title">
+        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          Adres Ekle
+        </a>
+      </h4>
+    </div>
+    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+      <div class="panel-body">
+      <input type="text" id="txt_konum" class="form-control" placeholder="Adres Girin" /><br />
+      <button class="btn btn-primary" class="form-control" id="btn_konumekle">Ekle</button> 
+       </div>
+    </div>
+  </div>
+</div>
+
+ 
+
+  </div></div>
+</div>
+ 
+</div>
+</body>
+
+</html>
